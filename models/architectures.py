@@ -20,7 +20,7 @@ class M1_CLIPOnly(nn.Module):
         self.clip_model, self.preprocess = clip.load("ViT-B/32", device=device)
         
         # Freeze CLIP
-        for param in self.clip_model.visual.parameters():
+        for param in self.clip_model.parameters():
             param.requires_grad = False
         
         # Simple classifier on top of CLIP
