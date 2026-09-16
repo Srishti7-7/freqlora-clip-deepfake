@@ -44,7 +44,7 @@ class M2_CLIPAdapter(nn.Module):
         self.clip_model, self.preprocess = clip.load("ViT-B/32", device=device)
         
         # Freeze CLIP
-        for param in self.clip_model.visual.parameters():
+        for param in self.clip_model.parameters():
             param.requires_grad = False
         
         # Low-rank adapter
@@ -135,7 +135,7 @@ class M3_CLIPDCTOnly(nn.Module):
         self.clip_model, self.preprocess = clip.load("ViT-B/32", device=device)
         
         # Freeze CLIP
-        for param in self.clip_model.visual.parameters():
+        for param in self.clip_model.parameters():
             param.requires_grad = False
         
         # Frequency encoder
@@ -172,7 +172,7 @@ class M4_FreqLoRACLIP(nn.Module):
         self.clip_model, self.preprocess = clip.load("ViT-B/32", device=device)
         
         # Freeze CLIP
-        for param in self.clip_model.visual.parameters():
+        for param in self.clip_model.parameters():
             param.requires_grad = False
         
         # Low-rank adapter
@@ -241,3 +241,4 @@ def count_trainable_params(model):
 def count_all_params(model):
     """Count all parameters"""
     return sum(p.numel() for p in model.parameters())
+
