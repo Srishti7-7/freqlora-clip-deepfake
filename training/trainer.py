@@ -52,7 +52,7 @@ class FewShotTrainer:
         return np.mean(losses[-10:])  # Last 10 epoch average
 
 
-def train_model(model, support_images, support_labels, device="cuda"):
-    """Train model on few-shot data"""
-    trainer = FewShotTrainer(model, device=device)
+def train_model(model, support_images, support_labels, device="cuda", epochs=100, lr=1e-3):
+    """Train model on few-shot data."""
+    trainer = FewShotTrainer(model, device=device, lr=lr, epochs=epochs)
     return trainer.train(support_images, support_labels)

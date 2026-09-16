@@ -18,8 +18,9 @@ from models.architectures import get_model, count_trainable_params
 from data.loader import get_few_shot_data, get_dataloader
 from training.trainer import train_model
 from evaluation.evaluator import Evaluator
+from experiments.utils import set_seed, save_json
 
-def run_main_experiment():
+def run_main_experiment(epochs=100):
     """Main experiment: 4 models × 2 compressions × 5 seeds"""
     
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -49,6 +50,7 @@ def run_main_experiment():
         
         for seed in seeds:
             print(f"Seed {seed}:")
+            set_seed(seed)
             
             seed_results = {}
             
@@ -61,14 +63,14 @@ def run_main_experiment():
             model = get_model(model_name, device=device)
             print(f"  Trainable params: {count_trainable_params(model)}")
             
-            train_model(model, support_images, support_labels, device=device)
+            train_model(model, support_images, support_labels, device=device, epochs=epochs)
             
             # Evaluate on each compression level
             for compression in compressions:
                 print(f"    Evaluating on {compression}...", end=" ")
                 
                 # Get test loader
-                test_loader = get_dataloader(image_dir, split='test')
+                test_loader = get_dataloader(image_dir, split='test', compression_level=compression, seed=seed)
                 
                 # Evaluate
                 evaluator = Evaluator(model, device=device)
@@ -83,8 +85,7 @@ def run_main_experiment():
     
     # Save results
     Path("results").mkdir(exist_ok=True)
-    with open("results/main_results.json", "w") as f:
-        json.dump(results, f, indent=2)
+    save_json(results, "results/main_results.json")
     
     print("\n" + "="*70)
     print("Results saved to results/main_results.json")
